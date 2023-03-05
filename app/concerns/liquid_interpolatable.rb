@@ -96,7 +96,7 @@ module LiquidInterpolatable
 
   def interpolated(self_object = nil)
     interpolate_with(self_object) do
-      (@interpolated_cache ||= {})[[options, interpolation_context]] ||=
+      (@interpolated_cache ||= {})[[options, interpolation_context].hash] ||=
         interpolate_options(options)
     end
   end
@@ -229,6 +229,12 @@ module LiquidInterpolatable
       else
         'concat(' << subs.join(', ') << ')'
       end
+    end
+
+    def regex_extract(input, regex, index = 0)
+      input.to_s[Regexp.new(regex), index]
+    rescue Index
+      nil
     end
 
     def regex_replace(input, regex, replacement = nil)
